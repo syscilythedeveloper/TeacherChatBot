@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import Navbar from './components/Navbar';
+import Navbar from '../components/Navbar';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
