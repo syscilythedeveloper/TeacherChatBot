@@ -41,7 +41,7 @@ export default function Login() {
             borderRadius: '50px',
             opacity: '0px',
             backgroundColor: 'rgb(240, 246, 232)',
-            display: {xs: 'none', sm: 'flex'},
+            display: { xs: 'none', sm: 'flex' },
             flexDirection: 'column',
           }}
         >
@@ -62,7 +62,7 @@ export default function Login() {
               fontSize: '1rem',
               fontWeight: '400',
               marginLeft: '30px',
-              marginBottom: '20px'
+              marginBottom: '20px',
             }}
           >
             Don&apos;t have an account?{' '}
@@ -144,6 +144,7 @@ export default function Login() {
             <span style={{ color: 'rgb(221, 178, 60)' }}>Forgot Password?</span>
           </Typography>
           <Button
+            type='submit'
             sx={{
               width: '209px',
               height: '42px',
@@ -158,12 +159,12 @@ export default function Login() {
               margin: 'auto',
               marginTop: '15px',
               boxShadow: '0px 4px 10px rgb(221, 195, 128)',
-                '&:hover': {
-                  boxShadow: '0px 6px 15px rgb(221, 195, 128)',
-                },
+              '&:hover': {
+                boxShadow: '0px 6px 15px rgb(221, 195, 128)',
+              },
             }}
           >
-            <span style={{ color: 'black', fontWeight: 'bold'}}>Login</span>
+            <span style={{ color: 'black', fontWeight: 'bold' }}>Login</span>
           </Button>
         </Box>
         <Box
@@ -175,7 +176,7 @@ export default function Login() {
             borderRadius: '50px',
             opacity: '0px',
             backgroundColor: 'rgb(240, 246, 232)',
-            display: {xs: 'flex', sm: 'none'},
+            display: { xs: 'flex', sm: 'none' },
             flexDirection: 'column',
           }}
         >
@@ -196,7 +197,7 @@ export default function Login() {
               fontSize: '1rem',
               fontWeight: '400',
               marginLeft: '30px',
-              marginBottom: '20px'
+              marginBottom: '20px',
             }}
           >
             Don&apos;t have an account?{' '}
@@ -278,6 +279,7 @@ export default function Login() {
             <span style={{ color: 'rgb(221, 178, 60)' }}>Forgot Password?</span>
           </Typography>
           <Button
+            type='submit'
             sx={{
               width: '209px',
               height: '42px',
@@ -292,12 +294,12 @@ export default function Login() {
               margin: 'auto',
               marginTop: '15px',
               boxShadow: '0px 4px 10px rgb(221, 195, 128)',
-                '&:hover': {
-                  boxShadow: '0px 6px 15px rgb(221, 195, 128)',
-                },
+              '&:hover': {
+                boxShadow: '0px 6px 15px rgb(221, 195, 128)',
+              },
             }}
           >
-            <span style={{ color: 'black', fontWeight: 'bold'}}>Login</span>
+            <span style={{ color: 'black', fontWeight: 'bold' }}>Login</span>
           </Button>
         </Box>
         {/* <Box
