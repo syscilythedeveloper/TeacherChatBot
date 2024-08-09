@@ -29,7 +29,7 @@ export default function Home() {
               fontFamily: 'Rampart One, Roboto, sans-serif',
             }}
           >
-            Rambot AI
+            RamBot AI
           </Typography>
         </Box>
         <Box
