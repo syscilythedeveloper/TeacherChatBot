@@ -3,6 +3,7 @@ import {
   Typography,
   BottomNavigation,
   BottomNavigationAction,
+  CircularProgress,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -12,7 +13,7 @@ import Button from "@mui/material/Button";
 import Image from "next/image";
 import EmojiEmotionsOutlinedIcon from "@mui/icons-material/EmojiEmotionsOutlined";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
-import { useState } from "react";
+import React, { useState } from "react";
 import HomeIcon from "@mui/icons-material/Home";
 import CommentIcon from "@mui/icons-material/Comment";
 import AccountIcon from "@mui/icons-material/AccountCircle";
@@ -22,59 +23,80 @@ import { auth, newMessage } from "@/firebase";
 import { toast } from "react-toastify";
 export default function Chat() {
   const router = useRouter();
-  const [value, setValue] = useState(0);
   const { isLoggedIn, isLoading, messages, setMessages } = useUser();
   const [message, setMessage] = useState("");
+  const [sendingMessage, setSendingMessage] = useState(false);
 
-  const [messageSend, setMessageSend] = useState("");
-  const goToChat = () => {
-    router.push("/chat");
-  };
-  const goToHome = () => {
-    router.push("/");
-  };
-  const goToAccount = () => {
-    router.push("/account");
-  };
   const handleSendMessage = async (mess) => {
     if (mess === "") return;
+    setSendingMessage(true);
+    try {
+      console.log("sending message: ", mess);
+      let bot_response = await fetch("/api/chat", {
+        method: "POST",
+        body: JSON.stringify({ message: mess }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    console.log("sending message: ", mess);
+      if (!bot_response.ok) {
+        console.error("Error getting bot response: ", bot_response);
+        cleanChat();
+        return;
+      }
 
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { text: mess, sender: auth.currentUser.displayName },
-    ]);
-    setMessage("");
+      bot_response = await bot_response.json();
 
-    const bot_response = await fetch("/api/chat", {
-      method: "POST",
-      body: JSON.stringify({ message: mess }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+      const data = {
+        sender: "user",
+        message: mess,
+        bot_response: bot_response.response,
+        timestamp: new Date(),
+      };
 
-    if (!bot_response.ok) {
-      console.error("Error sending message: ", bot_response);
+      const db_submit_response = await newMessage(auth.currentUser.uid, data);
+
+      if (db_submit_response.status === "error") {
+        console.error("Error submitting message to db");
+        toast.error("Error submitting message to db");
+      }
+      console.log("bot response to database: ", db_submit_response);
+      console.log("bot response data", data);
+
+      setMessages((prevMessages) => [...prevMessages, data]);
+    } catch (error) {
+      console.error("Error sending message: ", error);
       toast.error("Error sending message");
+    } finally {
+      cleanChat();
     }
-
-    const db_submit_response = await newMessage(auth.currentUser.uid, mess);
-
-    if (db_submit_response.status === "error") {
-      console.error("Error submitting message to db");
-      toast.error("Error submitting message to db");
-    }
-    console.log("bot response to database: ", db_submit_response);
-    console.log("bot response data", data);
-    const data = await bot_response.json();
-
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { text: data.response, sender: "bot" },
-    ]);
   };
+
+  function cleanChat() {
+    setSendingMessage(false);
+    setMessage("");
+  }
+
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <Typography variant="h3">Loading...</Typography>
+      </Box>
+    );
+  }
+
+  if (!isLoggedIn) {
+    router.push("/login");
+    return;
+  }
 
   return (
     <>
@@ -106,75 +128,101 @@ export default function Chat() {
             flexDirection: "column",
             height: "80vh",
             width: "300px",
-            overflowY: "auto",
-            padding: "10px",
-            border: "1px solid rgb(203, 203, 203)",
-            borderRadius: "8px",
-            // marginBottom: '20px',
           }}
         >
-          {messages.map((msg, index) => (
-            <Box
-              key={index}
-              sx={{
-                alignSelf: msg.sender === "user" ? "flex-end" : "flex-start",
-                backgroundColor:
-                  msg.sender === "user" ? "white" : "rgb(217, 162, 22)",
-                borderRadius: "10px",
-                padding: "10px",
-                margin: "5px 0",
-                maxWidth: "70%",
-              }}
-            >
-              {msg.text}
-            </Box>
-          ))}
-        </Box>
-
-        <Box
-          component="form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSendMessage(message.trim());
-          }}
-          sx={{
-            backgroundColor: "white",
-            width: "100%",
-            height: "20vh",
-            display: "flex",
-            justifyContent: "center",
-            alignContent: "center",
-          }}
-        >
-          <TextField
-            required
-            id="message"
-            name="message"
-            type="text"
-            autoFocus
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Type your message here..."
+          <Box
             sx={{
-              "& .MuiInputBase-root": {
-                border: "2px solid rgb(251, 251, 251)",
-                borderRadius: "50px",
-              },
-              "&.Mui-focused fieldset": {
-                border: "none",
-              },
-              "& .MuiInputBase-input": {
-                padding: "7px 14px",
-              },
-              width: "300px",
-              marginTop: "20px",
-              marginLeft: "25px",
-              marginRight: "0px",
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              overflowY: "auto",
+              padding: "10px",
+              border: "1px solid rgb(203, 203, 203)",
+              borderRadius: "8px",
             }}
-          />
-          <Button type="submit" sx={{ marginTop: "-15px" }}>
-            <SendOutlinedIcon sx={{ color: "rgb(227, 185, 80)" }} />
-          </Button>
+          >
+            {messages.map((msg, index) => (
+              <React.Fragment key={index}>
+                <Box
+                  sx={{
+                    alignSelf: "flex-start",
+                    backgroundColor: "white",
+                    borderRadius: "10px",
+                    padding: "10px",
+                    margin: "5px 0",
+                    maxWidth: "70%",
+                  }}
+                >
+                  {msg.message}
+                </Box>
+                <Box
+                  sx={{
+                    alignSelf: "flex-end",
+                    backgroundColor: "rgb(217, 162, 22)",
+                    borderRadius: "10px",
+                    padding: "10px",
+                    margin: "5px 0",
+                    maxWidth: "70%",
+                  }}
+                >
+                  {msg.bot_response}
+                </Box>
+              </React.Fragment>
+            ))}
+          </Box>
+
+          <Box
+            component="form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSendMessage(message.trim());
+            }}
+            sx={{
+              backgroundColor: "white",
+              width: "300px",
+              display: "flex",
+              justifyContent: "center",
+              padding: "10px",
+              alignContent: "center",
+              borderBottomLeftRadius: "12px",
+              borderBottomRightRadius: "12px",
+            }}
+          >
+            <TextField
+              required
+              id="message"
+              name="message"
+              type="text"
+              autoFocus
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Type your message here..."
+              sx={{
+                "& .MuiInputBase-root": {
+                  border: "2px solid rgb(251, 251, 251)",
+                  borderRadius: "50px",
+                },
+                "&.Mui-focused fieldset": {
+                  border: "none",
+                },
+                "& .MuiInputBase-input": {
+                  padding: "7px 14px",
+                },
+                width: "300px",
+              }}
+            />
+            <Button
+              type="submit"
+              disabled={sendingMessage}
+              endIcon={
+                sendingMessage ? (
+                  <CircularProgress size={20} />
+                ) : (
+                  <SendOutlinedIcon sx={{ color: "rgb(227, 185, 80)" }} />
+                )
+              }
+            ></Button>
+          </Box>
         </Box>
       </Box>
     </>

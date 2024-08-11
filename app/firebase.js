@@ -70,11 +70,11 @@ async function registerNewUser(user) {
 }
 
 async function newMessage(user_uid, message) {
+  const response = {};
   try {
-    const response = {};
     const userRef = doc(firestore, "users", user_uid);
     const messageCollection = collection(userRef, "messages");
-    const messageRef = doc(messageCollection);
+    const messageRef = doc(messageCollection, message.timestamp.toString());
 
     await runTransaction(firestore, async (transaction) => {
       transaction.set(messageRef, message);

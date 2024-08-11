@@ -6,6 +6,21 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 export const UserContext = createContext();
 
+async function fetchMessages(user) {
+  const messages = [];
+  const userRef = doc(firestore, "users", user.uid);
+  const messageCollection = collection(userRef, "messages");
+  const messagesSnapshot = await getDocs(messageCollection);
+
+  console.log("messages snapshot", messagesSnapshot);
+
+  messagesSnapshot.forEach((doc) => {
+    messages.push(doc.data());
+  });
+
+  return messages;
+}
+
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(auth.currentUser);
   const [isLoading, setIsLoading] = useState(true);
@@ -17,6 +32,11 @@ export const UserProvider = ({ children }) => {
       console.log("user changed", user);
       if (user) {
         setIsLoggedIn(true);
+
+        fetchMessages(user).then((messages) => {
+          console.log("messages fetched", messages);
+          setMessages(messages);
+        });
 
         setUser(user);
       } else {
