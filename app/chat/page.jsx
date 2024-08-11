@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@/contexts/userContext";
 import { auth, newMessage } from "@/firebase";
 import { toast } from "react-toastify";
+import Toast from "@/components/Toast";
 export default function Chat() {
   const router = useRouter();
   const { isLoggedIn, isLoading, messages, setMessages } = useUser();
@@ -100,6 +101,7 @@ export default function Chat() {
 
   return (
     <>
+      <Toast />
       <Box
         sx={{
           background:
