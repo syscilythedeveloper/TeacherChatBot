@@ -146,16 +146,6 @@ export default function Chat() {
             alignContent: "center",
           }}
         >
-          {/* <EmojiEmotionsOutlinedIcon
-          sx={{ color: 'rgb(227, 185, 80)', cursor: 'pointer' }}
-          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-        /> */}
-          {/* {showEmojiPicker && (
-          <Picker
-            onSelect={addEmoji}
-            style={{ position: 'absolute', bottom: '60px', right: '20px' }}
-          />
-        )} */}
           <TextField
             required
             id="message"
@@ -177,9 +167,9 @@ export default function Chat() {
                 padding: "7px 14px",
               },
               width: "300px",
-              marginTop: "15px",
+              marginTop: "20px",
               marginLeft: "25px",
-              marginRight: "25px",
+              marginRight: "0px",
             }}
           />
           <Button type="submit" sx={{ marginTop: "-15px" }}>
