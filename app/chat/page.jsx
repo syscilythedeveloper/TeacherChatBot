@@ -144,7 +144,6 @@ export default function Chat() {
             display: "flex",
             justifyContent: "center",
             alignContent: "center",
-            padding: "10px",
           }}
         >
           {/* <EmojiEmotionsOutlinedIcon
@@ -158,7 +157,6 @@ export default function Chat() {
           />
         )} */}
           <TextField
-            margin="normal"
             required
             id="message"
             name="message"
@@ -179,6 +177,7 @@ export default function Chat() {
                 padding: "7px 14px",
               },
               width: "300px",
+              marginTop: "15px",
               marginLeft: "25px",
               marginRight: "25px",
             }}
