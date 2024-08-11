@@ -28,7 +28,7 @@ export default function Navbar() {
     <>
       <Box
         sx={{
-          flexGrow: 1,
+          // flexGrow: 1,
           width: '100vw',
           display: 'flex',
         }}
