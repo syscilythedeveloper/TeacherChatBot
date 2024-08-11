@@ -188,28 +188,6 @@ export default function Chat() {
           </Button>
         </Box>
       </Box>
-      <BottomNavigation
-        value={value}
-        onChange={(event, newValue) => {
-          setValue(newValue);
-        }}
-        sx={{
-          width: "100%",
-          position: "fixed",
-          bottom: 0,
-          backgroundColor: "rgb(217, 162, 22)",
-          display: { xs: "flex", md: "none" },
-        }}
-      >
-        <BottomNavigationAction icon={<CommentIcon />} onClick={goToChat} />
-        <BottomNavigationAction icon={<HomeIcon />} onClick={goToHome} />
-        {isLoggedIn && (
-          <BottomNavigationAction
-            icon={<AccountIcon />}
-            // onClick={goToAccount}
-          />
-        )}
-      </BottomNavigation>
     </>
   );
 }
