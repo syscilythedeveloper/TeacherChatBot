@@ -26,7 +26,7 @@ Tone: Professional, supportive, and collaborative. Aim to make the teacher’s j
 export async function POST(req) {
   try {
     const openai = new OpenAI({
-      apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+      apiKey: process.env.NEXT_PBLIC_OPENAI_API_KEY,
       dangerouslyAllowBrowser: true,
     });
 
