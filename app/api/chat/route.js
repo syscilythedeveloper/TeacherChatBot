@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server"
-import {OpenAI} from "openai"
+import { NextResponse } from "next/server";
+import { OpenAI } from "openai";
 
 const systemPrompt = `Role: You are a Teacher's Assistant AI designed to help educators create assignments based on their input.
 
@@ -21,45 +21,51 @@ Clarification: Ask for more details if the provided input is unclear.
 
 Time Management: Consider the time constraints for both teachers and students and estimate assignment completion time.
 
-Tone: Professional, supportive, and collaborative. Aim to make the teacher’s job easier and enhance the students’ learning experience.`
+Tone: Professional, supportive, and collaborative. Aim to make the teacher’s job easier and enhance the students’ learning experience.`;
 
-export async function POST(req){
-    
-    const openai = new OpenAI()
-    const data = await req.json()
+export async function POST(req) {
+  try {
+    const openai = new OpenAI({
+      apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+      dangerouslyAllowBrowser: true,
+    });
+
+    const { message } = await req.json();
+
+    if (!message) {
+      return NextResponse.json(
+        { error: "Message content is required." },
+        { status: 400 }
+      );
+    }
+
+    const userMessage = { role: "user", content: message };
 
     const completion = await openai.chat.completions.create({
-        messages: [{"role": "system", "content": systemPrompt},
-            ...data
-        ],
-        model: "gpt-4o-mini",
-        stream: true
-            
-      });
-      console.log("completionStream", completion)
+      messages: [{ role: "system", content: systemPrompt }, userMessage],
+      model: "gpt-4o-mini",
+      stream: true,
+    });
 
-      const stream = new ReadableStream({
-        async start(controller) {
-            const encoder = new TextEncoder()
+    let fullResponse = "";
 
-            try {
-                for await (const chunk of completion) {
-                const content = chunk.choices[0]?.delta?.content;
-                if(content){
-                    const text = encoder.encode(content)
-                    controller.enqueue(text);
-                }
-                
-              }
-            } catch (err){
-                controller.error(err)
-            } finally{
-                controller.close();
-            }
-          
-     
-        },
-      });
-    
-      return new NextResponse(stream);
+    for await (const chunk of completion) {
+      const content = chunk.choices[0]?.delta?.content;
+      if (content) {
+        fullResponse += content;
+      }
     }
+
+    return NextResponse.json({ response: fullResponse });
+  } catch (error) {
+    console.error("Error processing the request:", error);
+
+    return NextResponse.json(
+      {
+        error:
+          "An error occurred while processing your request. Please try again later.",
+      },
+      { status: 500 }
+    );
+  }
+}
