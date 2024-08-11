@@ -95,9 +95,10 @@ export default function Signup() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          overflow: "auto",
         }}
       >
-        <Box sx={{ width: "392px", height: "100px" }}></Box>
+        <Box sx={{ width: "392px", height: "86px", marginTop: "24px" }}></Box>
         <Formik
           initialValues={{
             firstName: "",
@@ -121,7 +122,7 @@ export default function Signup() {
                   backgroundColor: "rgb(240, 246, 232)",
                   display: "flex",
                   flexDirection: "column",
-                  minWidth: "393px",
+                  marginBottom: "24px",
                 }}
               >
                 <Typography

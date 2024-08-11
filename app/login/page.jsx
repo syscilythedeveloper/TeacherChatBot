@@ -58,9 +58,11 @@ export default function Login() {
           backgroundColor: "rgb(221, 195, 129)",
           width: "100vw",
           height: "100vh",
+          maxHeight: "100vh",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          overflow: "auto",
         }}
       >
         <Box
@@ -102,7 +104,7 @@ export default function Login() {
                 component="div"
                 sx={{
                   width: "393px",
-                  height: "551px",
+                  height: "451px",
                   gap: "0px",
                   borderRadius: "50px",
                   opacity: "0px",
@@ -110,6 +112,7 @@ export default function Login() {
                   display: "flex",
                   flexDirection: "column",
                   padding: "0px 1rem",
+                  marginBottom: "24px",
                 }}
               >
                 <Typography
