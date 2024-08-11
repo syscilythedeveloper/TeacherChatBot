@@ -1,97 +1,113 @@
-import { AppBar, Toolbar, Typography } from "@mui/material";
-import Box from "@mui/material/Box";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import SettingsIcon from "@mui/icons-material/Settings";
-import { Badge } from "@mui/material";
-import Button from "@mui/material/Button";
-import { useUser } from "@/contexts/userContext";
+'use client';
+
+import { AppBar, Toolbar, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { Badge } from '@mui/material';
+import Button from '@mui/material/Button';
+import { useUser } from '@/contexts/userContext';
+import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
   const { isLoggedIn } = useUser();
+  const pathname = usePathname();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      setUser(null);
+      router.push('/login');
+    } catch (error) {
+      console.error('Error signing out: ', error);
+      toast.error('There was an error signing out. Please try again.');
+    }
+  };
+
   return (
     <>
       <Box
         sx={{
           flexGrow: 1,
-          width: "100vw",
-          display: { xs: "none", md: "flex" },
+          width: '100vw',
+          display: 'flex',
         }}
       >
         <AppBar
-          position="static"
+          position='static'
           sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            flexDirection: "row",
-            backgroundColor: "rgb(239, 245, 231)",
+            display: 'flex',
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+            backgroundColor: 'rgb(239, 245, 231)',
           }}
         >
           <Toolbar>
-            <Typography variant="h6" sx={{ color: "black" }}>
+            {/* <Typography variant='h6' sx={{ color: 'black' }}>
               Rambot AI
-            </Typography>
+            </Typography> */}
           </Toolbar>
-          <Box
+          {/* <Box
             sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              width: "500px",
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              width: '500px',
             }}
           >
             <Button>
-              <Typography variant="h6" sx={{ color: "black" }}>
+              <Typography variant='h6' sx={{ color: 'black' }}>
                 Text
               </Typography>
             </Button>
             <Button>
-              <Typography variant="h6" sx={{ color: "black" }}>
+              <Typography variant='h6' sx={{ color: 'black' }}>
                 Home
               </Typography>
             </Button>
-            {isLoggedIn && (
-              <Button>
-                <Typography variant="h6" sx={{ color: "black" }}>
-                  Account
+          </Box> */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            {isLoggedIn && pathname === '/chat' && (
+              <Button onClick={handleLogout}>
+                <Typography variant='h6' sx={{ color: 'black' }}>
+                  Logout
                 </Typography>
               </Button>
             )}
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <Badge badgeContent={" "} color="rgb(188, 191, 180)">
-              <NotificationsIcon sx={{ color: "rgb(188, 191, 180)" }} />
+            <Badge badgeContent={' '} color='rgb(188, 191, 180)'>
+              <NotificationsIcon sx={{ color: 'rgb(188, 191, 180)' }} />
             </Badge>
-            <SettingsIcon sx={{ color: "rgb(188, 191, 180)" }} />
+            <SettingsIcon sx={{ color: 'rgb(188, 191, 180)' }} />
           </Box>
         </AppBar>
       </Box>
-      <Box
+      {/* <Box
         sx={{
           flexGrow: 1,
-          width: "100vw",
-          display: { xs: "block", md: "none" },
+          width: '100vw',
+          display: { xs: 'block', md: 'none' },
         }}
       >
         <AppBar
-          position="static"
+          position='static'
           sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            flexDirection: "row",
-            backgroundColor: "rgb(239, 245, 231)",
+            display: 'flex',
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+            backgroundColor: 'rgb(239, 245, 231)',
           }}
         >
           <Toolbar>
-            {/* <Typography variant="h6" sx={{ color: 'black' }}>Rambot AI</Typography> */}
+            <Typography variant="h6" sx={{ color: 'black' }}>Rambot AI</Typography>
           </Toolbar>
-          <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <Badge badgeContent={" "} color="rgb(188, 191, 180)">
-              <NotificationsIcon sx={{ color: "rgb(188, 191, 180)" }} />
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Badge badgeContent={' '} color='rgb(188, 191, 180)'>
+              <NotificationsIcon sx={{ color: 'rgb(188, 191, 180)' }} />
             </Badge>
-            <SettingsIcon sx={{ color: "rgb(188, 191, 180)" }} />
+            <SettingsIcon sx={{ color: 'rgb(188, 191, 180)' }} />
           </Box>
         </AppBar>
-      </Box>
+      </Box> */}
     </>
   );
 }

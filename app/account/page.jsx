@@ -203,6 +203,7 @@ export default function Account() {
           >
             <Button
               type="button"
+              onClick={handleLogout}
               sx={{
                 width: "209px",
                 height: "42px",

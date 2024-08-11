@@ -206,7 +206,7 @@ export default function Chat() {
         {isLoggedIn && (
           <BottomNavigationAction
             icon={<AccountIcon />}
-            onClick={goToAccount}
+            // onClick={goToAccount}
           />
         )}
       </BottomNavigation>
