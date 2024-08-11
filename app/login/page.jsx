@@ -63,11 +63,15 @@ export default function Login() {
           alignItems: "center",
         }}
       >
-        <Box sx={{ width: "392px", height: "240px" }}>
+        <Box
+          sx={{
+            width: "393px",
+            height: "240px",
+          }}
+        >
           <Typography
             variant="h1"
             sx={{
-              display: { xs: "flex", sm: "flex" },
               textShadow: "8px 2px 4px rgba(213, 159, 23, 0.5)",
               textAlign: "center",
               fontFamily: "Rampart One, Roboto, sans-serif",
@@ -103,8 +107,9 @@ export default function Login() {
                   borderRadius: "50px",
                   opacity: "0px",
                   backgroundColor: "rgb(240, 246, 232)",
-                  display: { xs: "none", sm: "flex" },
+                  display: "flex",
                   flexDirection: "column",
+                  padding: "0px 1rem",
                 }}
               >
                 <Typography

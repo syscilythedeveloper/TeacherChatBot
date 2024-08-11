@@ -119,8 +119,9 @@ export default function Signup() {
                   borderRadius: "50px",
                   opacity: "0px",
                   backgroundColor: "rgb(240, 246, 232)",
-                  display: { xs: "none", sm: "flex" },
+                  display: "flex",
                   flexDirection: "column",
+                  minWidth: "393px",
                 }}
               >
                 <Typography
