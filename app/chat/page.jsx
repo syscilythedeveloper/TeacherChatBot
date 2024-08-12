@@ -35,7 +35,7 @@ export default function Chat() {
 
       if (!bot_response.ok) {
         console.error("Error getting bot response: ", bot_response);
-        toast.error("Error getting bot response");
+        toast.error("Error getting bot response. Check OPENAI key has credits");
         cleanChat();
         return;
       }

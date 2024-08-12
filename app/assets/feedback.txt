@@ -1,0 +1,13 @@
+
+[1723427399452] For this question "give me 2 sums" the bot response was "Here are two math problems suitable for third graders, aligned with Common Core standards:
+
+1. **Multiplication Word Problem**:  
+   Jack has 3 packets of seeds. Each packet contains 9 seeds. How many seeds does Jack have in total?  
+   *(3.OA.A.1)*
+
+2. **Addition Word Problem**:  
+   There are 124 students in a school. If 36 new students enroll, how many students will there be in total?  
+   *(3.NBT.A.2)*
+
+Feel free to modify these problems as needed or let me know if you require additional problems or other types of sums!" and the feedback was "good". If bad, respond with the correct answer.
+
