@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { OpenAI } from "openai";
 
+import fs from "fs";
 const systemPrompt = `Role: You are a Teacher's Assistant AI designed to help educators create assignments based on their input.
 
 Objectives:
@@ -26,7 +27,7 @@ Tone: Professional, supportive, and collaborative. Aim to make the teacher’s j
 export async function POST(req) {
   try {
     const openai = new OpenAI({
-      apiKey: process.env.NEXT_PBLIC_OPENAI_API_KEY,
+      apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
       dangerouslyAllowBrowser: true,
     });
 
@@ -39,7 +40,17 @@ export async function POST(req) {
       );
     }
 
-    const userMessage = { role: "user", content: message };
+    if (message.feedback) {
+      writeFeedback(message);
+    }
+
+    const context = retrieveRelevantDocs();
+    const feedback = retrieveFeedback();
+
+    const userMessage = {
+      role: "user",
+      content: `${context}. User feedback: ${feedback}\n\n${message}`,
+    };
 
     const completion = await openai.chat.completions.create({
       messages: [{ role: "system", content: systemPrompt }, userMessage],
@@ -68,4 +79,15 @@ export async function POST(req) {
       { status: 500 }
     );
   }
+}
+
+function retrieveRelevantDocs() {
+  const file = fs.readFileSync("./app/assets/rag.txt", "utf8");
+  const content = file.toString();
+  return content;
+}
+function retrieveFeedback() {
+  const file = fs.readFileSync("./app/assets/feedback.txt", "utf8");
+  const content = file.toString();
+  return content;
 }

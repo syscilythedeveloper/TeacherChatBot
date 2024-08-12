@@ -75,6 +75,7 @@ async function newMessage(user_uid, message) {
     const userRef = doc(firestore, "users", user_uid);
     const messageCollection = collection(userRef, "messages");
     const messageRef = doc(messageCollection, message.timestamp.toString());
+    message.index = message.timestamp.toString();
 
     await runTransaction(firestore, async (transaction) => {
       transaction.set(messageRef, message);
@@ -90,4 +91,31 @@ async function newMessage(user_uid, message) {
   }
 }
 
-export { firestore, auth, storage, createUser, newMessage };
+async function updateMessage(user_uid, message) {
+  const response = {};
+  try {
+    console.log(
+      "Updating message for user: ",
+      user_uid,
+      " with message: ",
+      message
+    );
+    const userRef = doc(firestore, "users", user_uid);
+    const messageCollection = collection(userRef, "messages");
+    const messageRef = doc(messageCollection, message.index);
+
+    await runTransaction(firestore, async (transaction) => {
+      transaction.set(messageRef, message);
+    });
+
+    console.log("Message updated for user: ", user_uid);
+    response.status = "success";
+  } catch (error) {
+    console.error("Error updating message: ", error);
+    response.status = "error";
+  } finally {
+    return response;
+  }
+}
+
+export { firestore, auth, storage, createUser, newMessage, updateMessage };
