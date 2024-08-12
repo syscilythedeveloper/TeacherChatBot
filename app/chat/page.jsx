@@ -1,27 +1,19 @@
 "use client";
-import {
-  Typography,
-  BottomNavigation,
-  BottomNavigationAction,
-  CircularProgress,
-} from "@mui/material";
+import { Typography, CircularProgress, IconButton } from "@mui/material";
 import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
 import Navbar from "../components/Navbar";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Image from "next/image";
-import EmojiEmotionsOutlinedIcon from "@mui/icons-material/EmojiEmotionsOutlined";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import React, { useState } from "react";
-import HomeIcon from "@mui/icons-material/Home";
-import CommentIcon from "@mui/icons-material/Comment";
-import AccountIcon from "@mui/icons-material/AccountCircle";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/contexts/userContext";
-import { auth, newMessage } from "@/firebase";
+import { auth, newMessage, updateMessage } from "@/firebase";
 import { toast } from "react-toastify";
 import Toast from "@/components/Toast";
+import { ThumbDown } from "@mui/icons-material";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 export default function Chat() {
   const router = useRouter();
   const { isLoggedIn, isLoading, messages, setMessages } = useUser();
@@ -43,7 +35,7 @@ export default function Chat() {
 
       if (!bot_response.ok) {
         console.error("Error getting bot response: ", bot_response);
-        toast.error("Error getting bot response");
+        toast.error("Error getting bot response. Check OPENAI key has credits");
         cleanChat();
         return;
       }
@@ -78,6 +70,50 @@ export default function Chat() {
   function cleanChat() {
     setSendingMessage(false);
     setMessage("");
+  }
+
+  async function handleFeedback(index, good) {
+    // Create a copy of the messages array
+    const newMessages = [...messages];
+
+    // Get the specific message to update
+    const mess = newMessages[index];
+    const feedback = mess.feedback;
+
+    // Toggle or set the feedback
+    if (feedback) {
+      mess.feedback = null;
+    } else {
+      mess.feedback = good ? "good" : "bad";
+    }
+
+    // Send the updated message to the server
+    const response = await fetch("/api/chat/feedback", {
+      method: "POST",
+      body: JSON.stringify({ message: mess }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    // Parse the response
+    const result = await response.json();
+    if (response.ok) {
+      console.log("Feedback updated: ", result.message);
+    } else {
+      console.error("Feedback update failed: ", result.error);
+    }
+
+    // Update the generatedIndex with the one returned from the server
+    mess.generatedIndex = result.generatedIndex;
+
+    // Update the messages array with the updated message
+    newMessages[index] = mess;
+
+    // Assuming you have a state setter function like setMessages
+    updateMessage(auth.currentUser.uid, mess);
+
+    setMessages(newMessages);
   }
 
   if (isLoading) {
@@ -160,15 +196,52 @@ export default function Chat() {
                 </Box>
                 <Box
                   sx={{
-                    alignSelf: "flex-end",
-                    backgroundColor: "rgb(217, 162, 22)",
-                    borderRadius: "10px",
-                    padding: "10px",
-                    margin: "5px 0",
-                    maxWidth: "70%",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    flexDirection: "column",
                   }}
                 >
-                  {msg.bot_response}
+                  <Box
+                    sx={{
+                      alignSelf: "flex-end",
+                      backgroundColor: "rgb(217, 162, 22)",
+                      borderRadius: "10px",
+                      padding: "10px",
+                      margin: "5px 0",
+                      maxWidth: "70%",
+                    }}
+                    onContextMenu={(e) => handleRightClick(index, e)}
+                  >
+                    {msg.bot_response}
+                  </Box>
+                  <Box
+                    sx={{
+                      position: "relative",
+                      right: "calc(-100% + 68px)",
+                      display: "flex",
+                    }}
+                  >
+                    <IconButton onClick={() => handleFeedback(index, true)}>
+                      <ThumbUpIcon
+                        sx={
+                          msg.feedback === "good"
+                            ? { color: "green" }
+                            : { color: "black" }
+                        }
+                        style={{ width: "14px", height: "14px" }}
+                      />
+                    </IconButton>
+                    <IconButton onClick={() => handleFeedback(index, false)}>
+                      <ThumbDown
+                        sx={
+                          msg.feedback === "bad"
+                            ? { color: "red" }
+                            : { color: "black" }
+                        }
+                        style={{ width: "14px", height: "14px" }}
+                      />
+                    </IconButton>
+                  </Box>
                 </Box>
               </React.Fragment>
             ))}
